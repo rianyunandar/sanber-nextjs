@@ -3,7 +3,7 @@ import Menu from "../menu";
 
 function Header() {
   return (
-    <div>
+    <div class="w-full">
       <Menu />
     </div>
   );

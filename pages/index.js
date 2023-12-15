@@ -15,7 +15,7 @@ export default function Layout({ children, metaTitle, metaDescription }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      Contents
+      <div className="text-3xl font-bold underline">Content </div>
       <Footer />
     </div>
   );
