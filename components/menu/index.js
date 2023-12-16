@@ -22,7 +22,7 @@ export default function menu() {
             <li>
               <a
                 className="text-gray-500 transition hover:text-gray-500/75"
-                href="/"
+                href="/contact"
               >
                 {" "}
                 Contact{" "}
@@ -31,7 +31,7 @@ export default function menu() {
             <li>
               <a
                 className="text-gray-500 transition hover:text-gray-500/75"
-                href="/"
+                href="/blog"
               >
                 {" "}
                 Blog{" "}
@@ -44,7 +44,7 @@ export default function menu() {
           <div className="flex">
             <a
               className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 m-2"
-              href="/"
+              href="/login"
             >
               Login / Register
             </a>
