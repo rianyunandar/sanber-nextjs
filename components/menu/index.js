@@ -1,7 +1,7 @@
 import Image from "next/image";
 export default function menu() {
   return (
-    <nav className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+    <nav className="mx-auto flex h-16 items-center gap-8 px-4 sm:px-6 lg:px-8">
       <a href="/">
         <Image src="/next.svg" alt="Logo" width={60} height={60} />
       </a>
