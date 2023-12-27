@@ -22,19 +22,19 @@ export default function menu() {
             <li>
               <a
                 className="text-gray-500 transition hover:text-gray-500/75"
-                href="/contact"
+                href="/user"
               >
                 {" "}
-                Contact{" "}
+                user{" "}
               </a>
             </li>
             <li>
               <a
                 className="text-gray-500 transition hover:text-gray-500/75"
-                href="/blog"
+                href="/note"
               >
                 {" "}
-                Blog{" "}
+                Note{" "}
               </a>
             </li>
           </ul>

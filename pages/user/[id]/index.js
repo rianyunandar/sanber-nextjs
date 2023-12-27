@@ -38,10 +38,8 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
   const res = await fetch("http://localhost:3000/api/user");
   const userIds = await res.json();
-  console.log(userIds);
 
   const paths = userIds.map((id) => ({ params: { id: id.id.toString() } }));
-  console.log(paths);
 
   return { paths, fallback: false };
 }
