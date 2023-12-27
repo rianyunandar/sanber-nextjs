@@ -1,70 +1,73 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const LayoutComponent = dynamic(() => import("@/layout"));
 
-export default function AddNotes() {
+export default function EditNotes() {
   const router = useRouter();
-  const [notes, setNotes] = useState({
-    title: "",
-    description: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [alertMessage, setAlertMessage] = useState(null);
+  const { id } = router.query;
+  const [notes, setNotes] = useState({ title: "", description: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     try {
-      setLoading(true);
-      const response = await fetch("http://localhost:3000/api/note/add", {
-        method: "POST",
+      setIsLoading(true); // Set loading to true when submitting
+
+      const response = await fetch(`/api/note/update/${id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(notes),
+        body: JSON.stringify({
+          title: notes.title,
+          description: notes.description,
+        }),
       });
+
       const result = await response.json();
       if (result?.success) {
-        setAlertMessage("Note added successfully!");
+        window.alert("Note updated successfully!");
         router.push("/note");
-      } else {
-        setAlertMessage("Failed to add note. Please try again.");
       }
     } catch (error) {
-      setAlertMessage("An error occurred. Please try again later.");
       // Handle error
     } finally {
-      setLoading(false);
+      setIsLoading(false); // Set loading back to false when done
     }
   };
+
+  useEffect(() => {
+    async function fetchingData() {
+      try {
+        const res = await fetch(`/api/note/${id}`);
+        const listNotes = await res.json();
+        setNotes(listNotes?.data);
+      } catch (error) {
+        // Handle error
+      }
+    }
+    fetchingData();
+  }, [id]);
 
   return (
     <>
       <LayoutComponent metaTitle="Notes">
         <div className="m-5 p-5">
           <div className="bg-white p-5">
-            <h2 className="text-2xl font-bold">Add Notes</h2>
-            {alertMessage && (
-              <div
-                className={`${
-                  alertMessage.includes("successfully")
-                    ? "bg-green-100 border-l-4 border-green-500"
-                    : "bg-red-100 border-l-4 border-red-500"
-                } text-green-700 p-4 my-4`}
-              >
-                {alertMessage}
-              </div>
-            )}
-
+            <h2 className="text-2xl font-bold">Edit Notes</h2>
             <div className="grid gap-5">
               <div>
                 <label htmlFor="title" className="text-sm">
                   Title
                 </label>
+                {notes?.title == "" ? <div>Loading data</div> : ""}
+
                 <input
                   type="text"
                   id="title"
                   className="border rounded p-2 w-full"
+                  value={notes?.title || ""}
                   onChange={(event) =>
                     setNotes({ ...notes, title: event.target.value })
                   }
@@ -77,6 +80,7 @@ export default function AddNotes() {
                 <textarea
                   id="description"
                   className="border rounded p-2 w-full"
+                  value={notes?.description || ""}
                   onChange={(event) =>
                     setNotes({ ...notes, description: event.target.value })
                   }
@@ -85,12 +89,12 @@ export default function AddNotes() {
               <div>
                 <button
                   onClick={handleSubmit}
-                  className={`${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
-                  } bg-blue-500 text-white py-2 px-4 rounded`}
-                  disabled={loading}
+                  className={`bg-blue-500 text-white py-2 px-4 rounded ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={isLoading}
                 >
-                  {loading ? "Submitting..." : "Submit"}
+                  {isLoading ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </div>

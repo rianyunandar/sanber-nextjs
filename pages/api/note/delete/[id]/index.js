@@ -1,22 +1,21 @@
-// pages/api/note/add.js
+// pages/api/note/delete.js
 export default async function handler(req, res) {
-  if (req.method === "POST") {
+  if (req.method === "DELETE") {
     try {
       const urlApi = process.env.API_URL;
+      console.log(req.query.id);
 
-      const response = await fetch(`${urlApi}/notes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(req.body),
+      const response = await fetch(`${urlApi}/notes/delete/${req.query.id}`, {
+        method: "DELETE",
       });
-
       const result = await response.json();
+      console.log(result);
       if (!result.success) {
         throw new Error(result.message);
       }
-      res.status(200).json({ success: true, message: result.message });
+      res
+        .status(200)
+        .json({ success: true, message: "Note deleted successfully" });
     } catch (error) {
       console.error(error);
       res

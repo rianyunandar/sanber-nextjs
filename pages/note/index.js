@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
@@ -22,6 +22,42 @@ export async function getStaticProps() {
 
 export default function Notes({ notes }) {
   const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async (id) => {
+    try {
+      // Ask for confirmation before proceeding with the delete
+      const shouldDelete = window.confirm(
+        "Are you sure you want to delete this note?"
+      );
+
+      if (!shouldDelete) {
+        return; // If the user cancels the delete operation, do nothing
+      }
+
+      // Set the loading state to true when the deletion starts
+      setIsDeleting(true);
+
+      const response = await fetch(`/api/note/delete/${id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        // Reload the page or update the state to reflect the changes
+        router.reload();
+      } else {
+        // Handle the error, e.g., show a message to the user
+        console.error(result.message);
+      }
+    } catch (error) {
+      // Handle the error, e.g., show a generic error message
+      console.error("Error deleting note:", error);
+    } finally {
+      // Set the loading state back to false after the deletion is complete
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <>
@@ -44,13 +80,18 @@ export default function Notes({ notes }) {
                     <p className="text-gray-600">{item.description}</p>
                     <div className="flex justify-between flex-wrap mt-4">
                       <button
-                        onClick={() => router.push(`/notes/edit/${item.id}`)}
+                        onClick={() => router.push(`/note /edit/${item.id}`)}
                         className="text-blue-500 hover:text-blue-700 mr-2"
                       >
                         Edit
                       </button>
-                      <button className="text-red-500 hover:text-red-700">
-                        Delete
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className={`${
+                          isDeleting ? "opacity-50 cursor-not-allowed" : ""
+                        } text-red-500 hover:text-red-700`}
+                      >
+                        {isDeleting ? "Deleting..." : "Delete"}
                       </button>
                     </div>
                   </div>
