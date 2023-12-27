@@ -1,23 +1,8 @@
 import React from "react";
-import Layout from "@/layout";
-import Link from "next/link";
+import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
-const NoteList = ({ notes }) => {
-  return (
-    <Layout>
-      <div className="text-3xl font-bold underline flex flex-grow">
-        Note List
-      </div>
-      <ul>
-        {notes.map((note) => (
-          <li key={note.id}>
-            <Link href={`/note/${note.id}`}>{note.title}</Link>
-          </li>
-        ))}
-      </ul>
-    </Layout>
-  );
-};
+const Layout = dynamic(() => import("@/layout"));
 
 export async function getStaticProps() {
   try {
@@ -35,4 +20,46 @@ export async function getStaticProps() {
   }
 }
 
-export default NoteList;
+export default function Notes({ notes }) {
+  const router = useRouter();
+
+  return (
+    <>
+      <Layout metaTitle="Notes">
+        <div className="lg:px-28">
+          <div className="flex justify-end mb-5">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => router.push("/note/add")}
+            >
+              Add Notes
+            </button>
+          </div>
+          <div className="flex">
+            <div className="grid grid-cols-3 gap-5">
+              {notes.map((item) => (
+                <div key={item.id} className="col-span-1">
+                  <div className="bg-white border rounded shadow p-5">
+                    <h2 className="text-xl font-bold">{item.title}</h2>
+                    <p className="text-gray-600">{item.description}</p>
+                    <div className="flex justify-between flex-wrap mt-4">
+                      <button
+                        onClick={() => router.push(`/notes/edit/${item.id}`)}
+                        className="text-blue-500 hover:text-blue-700 mr-2"
+                      >
+                        Edit
+                      </button>
+                      <button className="text-red-500 hover:text-red-700">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Layout>
+    </>
+  );
+}
