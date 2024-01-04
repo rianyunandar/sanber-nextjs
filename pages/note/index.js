@@ -1,27 +1,16 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import { useQueries } from "@/hooks/useQueries";
 
 const Layout = dynamic(() => import("@/layout"));
 
-export async function getStaticProps() {
-  try {
-    const HOST_URL = process.env.HOST_URL;
-    const response = await fetch(`${HOST_URL}/api/note`);
-    const data = await response.json();
-
-    return {
-      props: { notes: data.data },
-    };
-  } catch (error) {
-    return {
-      props: { notes: [] },
-    };
-  }
-}
-
-export default function Notes({ notes }) {
+export default function Notes() {
   const router = useRouter();
+  const { data: listNotes } = useQueries({
+    prefixUrl: "https://simpeg-be.vercel.app/api/v2/api/notes",
+  });
+
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async (id) => {
@@ -73,7 +62,7 @@ export default function Notes({ notes }) {
           </div>
           <div className="flex">
             <div className="grid grid-cols-3 gap-5">
-              {notes.map((item) => (
+              {listNotes?.data?.map((item) => (
                 <div key={item.id} className="col-span-1">
                   <div className="bg-white border rounded shadow p-5">
                     <h2 className="text-xl font-bold">{item.title}</h2>
