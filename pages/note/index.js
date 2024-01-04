@@ -1,15 +1,25 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import { useQueries } from "@/hooks/useQueries";
+// import { useQueries } from "@/hooks/useQueries";
+import useSWR from "swr";
 
 const Layout = dynamic(() => import("@/layout"));
 
 export default function Notes() {
   const router = useRouter();
-  const { data: listNotes } = useQueries({
-    prefixUrl: "https://simpeg-be.vercel.app/api/v2/api/notes",
-  });
+
+  // const { data: listNotes } = useQueries({
+  //   prefixUrl: "https://simpeg-be.vercel.app/api/v2/api/notes",
+  // });
+  const {
+    data: listNotes,
+    error,
+    isLoading,
+  } = useSWR("https://simpeg-be.vercel.app/api/v2/api/notes", fetcher);
+
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
 
   const [isDeleting, setIsDeleting] = useState(false);
 
